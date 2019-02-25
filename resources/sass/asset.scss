@@ -1,0 +1,7 @@
+table.table, table.hidden-edit {
+	.td-fit {
+		span:nth-child(2) {
+			display: none;
+		}
+	}
+}
