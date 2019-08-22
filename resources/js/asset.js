@@ -1,6 +1,7 @@
 /**
  * Nova Temply helpers
  */
+import { checkNewPage } from './helpers/removeEditButton';
 
 async function fetchAsyncConfigs () {
   // await response of fetch call
@@ -12,48 +13,62 @@ async function fetchAsyncConfigs () {
 }
 
 var resources;
+var domain = window.location.hostname
 
-if (localStorage.getItem("temply.edit-link-resources") === null) {
-    fetchAsyncConfigs()
-    .then(data => {
-        resources = data;
-        localStorage.setItem("temply.edit-link-resources", resources);
-        
-    })
-    .catch(reason => console.log(reason.message))
-} else {
-    resources = localStorage.getItem("temply.edit-link-resources")
-}
+if (domain != 'temply.on' && domain != 'templyapp.com') {
+    startNovaRouterModifications()
+} 
 
-import { checkNewPage } from './helpers/removeEditButton';
+function startNovaRouterModifications() {
 
-Nova.booting((Vue, router) => {
-    router.beforeEach((to, from, next) => {
-        if (from.name == 'create' && to.name == 'detail') {
-            let newTo = {
-                name: 'index',
-                params: {
-                    resourceName: from.params.resourceName,
-                },
-            };
-            next(newTo);
-        }
+    //Hide edit button by css
+    let body = document.body;
+    body.classList.add("hidden-edit");
 
-        if (resources.includes(from.params.resourceName)) {
-            if (from.name == 'index' && to.name == 'detail') {
+    if (localStorage.getItem("temply.edit-link-resources") === null) {
+        fetchAsyncConfigs()
+        .then(data => {
+            resources = data;
+            localStorage.setItem("temply.edit-link-resources", resources);
+            
+        })
+        .catch(reason => console.log(reason.message))
+    } else {
+        resources = localStorage.getItem("temply.edit-link-resources")
+    }
+
+    
+
+    Nova.booting((Vue, router) => {
+        router.beforeEach((to, from, next) => {
+            if (from.name == 'create' && to.name == 'detail') {
                 let newTo = {
-                    name : 'edit',
+                    name: 'index',
                     params: {
-                        resourceName: to.params.resourceName,
-                        resourceId: to.params.resourceId.toString()
-                    }
-                }
-                next(newTo)
+                        resourceName: from.params.resourceName,
+                    },
+                };
+                next(newTo);
             }
-        }
 
-        checkNewPage(router);
-        next();
+            if (resources.includes(from.params.resourceName)) {
+                if (from.name == 'index' && to.name == 'detail') {
+                    let newTo = {
+                        name : 'edit',
+                        params: {
+                            resourceName: to.params.resourceName,
+                            resourceId: to.params.resourceId.toString()
+                        }
+                    }
+                    next(newTo)
+                }
+            }
+            checkNewPage(router);
+            next();
+        });
+
     });
 
-});
+}
+
+

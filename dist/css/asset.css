@@ -1,1 +1,1 @@
-table.hidden-edit .td-fit span:nth-child(2),table.table .td-fit span:nth-child(2){display:none}
+body.hidden-edit table.hidden-edit .td-fit span:nth-child(2),body.hidden-edit table.table .td-fit span:nth-child(2){display:none}

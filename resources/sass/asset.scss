@@ -1,7 +1,11 @@
-table.table, table.hidden-edit {
-	.td-fit {
-		span:nth-child(2) {
-			display: none;
+body.hidden-edit {
+
+	table.table, table.hidden-edit {
+		.td-fit {
+			span:nth-child(2) {
+				display: none;
+			}
 		}
 	}
+
 }
